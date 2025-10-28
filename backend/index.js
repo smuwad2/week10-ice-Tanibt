@@ -5,7 +5,18 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('./blog.db');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public'))); // Serve frontend
-app.use(cors());
+// Allow all origins (works in Codespaces, localhost, etc.)
+app.use(cors({
+    origin: '*', 
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
+
+app.use((req, res, next) => {
+    console.log('Incoming request from:', req.headers.origin);
+    next();
+});
+
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
